@@ -1,0 +1,11 @@
+# gradle
+.gradle/
+build/
+
+# intellij
+.idea/
+out/
+*.iml
+
+# macOS
+.DS_Store
