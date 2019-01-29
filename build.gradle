@@ -1,27 +1,53 @@
 buildscript {
     repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
         jcenter()
     }
     dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:$springBootPluginVersion"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintrayPluginVersion"
     }
 }
 
-apply plugin: "java-library"
-apply plugin: "org.springframework.boot"
-apply plugin: "io.spring.dependency-management"
-apply from: "gradle-scripts/library_build.gradle"
+apply plugin: 'java-library'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply from: 'gradle-scripts/git.gradle'
+apply from: 'gradle-scripts/snapshot.gradle'
+apply from: 'gradle-scripts/semantic_version.gradle'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    api("org.springframework.boot:spring-boot-starter")
+    api("org.springframework.boot:spring-boot-starter:$springBootVersion")
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     testCompile("junit:junit:$junitVersion")
+}
+
+publishing {
+    publications {
+        Publication(MavenPublication) {
+            from components.java
+            groupId "$group"
+            artifactId "$project.name"
+            version "$project.version"
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+
+    pkg {
+        name = "$project.name"
+        vcsUrl = "https://github.com/dylmeadows/$project.name"
+        licenses = ['MIT']
+        publications = ['Publication']
+        repo = allowSnapshots ? 'libs-snapshot' : 'libs-release'
+        version {
+            name = "$project.version"
+            released = new Date()
+        }
+    }
 }
