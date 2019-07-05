@@ -1,6 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$artifactory_version"
+    }
+}
+
 apply plugin: "kotlin"
 apply plugin: "java-library"
+apply plugin: "maven"
 apply plugin: "maven-publish"
+apply plugin: "com.jfrog.artifactory"
 
 repositories {
     mavenCentral()
@@ -8,7 +21,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:2.1.6.RELEASE"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:$spring_version"
 }
 
 compileKotlin {
@@ -17,4 +30,42 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            groupId group
+            artifactId project.name
+            version project.version
+        }
+    }
+}
+
+artifactory {
+    contextUrl = 'https://oss.jfrog.org/artifactory'
+    publish {
+        repository {
+            repoKey = 'oss-snapshot-local'
+            username = System.getenv("BINTRAY_USER")
+            password = System.getenv("BINTRAY_KEY")
+            maven = true
+        }
+        defaults {
+            publications('mavenJava')
+            publishConfigs('archives', 'published')
+            publishBuildInfo = true
+            publishArtifacts = true
+            publishPom = true
+        }
+    }
+    resolve {
+        repository {
+            repoKey = 'libs-release'
+            username = System.getenv("BINTRAY_USER")
+            password = System.getenv("BINTRAY_KEY")
+            maven = true
+        }
+    }
 }
