@@ -17,11 +17,16 @@ apply plugin: "com.jfrog.artifactory"
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://oss.jfrog.org/artifactory/libs-snapshot"
+    }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    api "org.springframework.boot:spring-boot-starter-webflux:$spring_version"
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    api("org.springframework.boot:spring-boot-starter:$spring_version")
+    api("io.github.dylmeadows:commonkt-javafx:0.0.1-SNAPSHOT") { changing = true }
+    api("io.github.dylmeadows:reactor-javafx:0.0.1-SNAPSHOT") { changing = true }
 }
 
 compileKotlin {
