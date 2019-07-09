@@ -4,19 +4,26 @@ import javafx.application.Application
 import javafx.stage.Stage
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.WebApplicationType
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.context.ConfigurableApplicationContext
+import kotlin.reflect.KClass
 
-@SpringBootApplication
-open class SpringFxApplication : Application() {
-
+class SpringFxApplication : Application() {
     private lateinit var entryPoint: ApplicationEntryPoint
     private lateinit var ctx: ConfigurableApplicationContext
 
-    final override fun init() {
+    companion object {
+        private lateinit var entryPointClass: KClass<out ApplicationEntryPoint>
+
+        fun <T : ApplicationEntryPoint> launch(entryPointClass: KClass<T>, vararg args: String) {
+            this.entryPointClass = entryPointClass
+            launch(SpringFxApplication::class.java, *args)
+        }
+    }
+
+    override fun init() {
         val args = parameters.raw.toTypedArray()
-        ctx = SpringApplicationBuilder(javaClass)
+        ctx = SpringApplicationBuilder(entryPointClass.java)
             .web(WebApplicationType.NONE)
             .headless(false)
             .run(*args)
@@ -24,11 +31,11 @@ open class SpringFxApplication : Application() {
         entryPoint.init()
     }
 
-    final override fun start(stage: Stage) {
+    override fun start(stage: Stage) {
         entryPoint.start(stage)
     }
 
-    final override fun stop() {
+    override fun stop() {
         entryPoint.stop()
         ctx.close()
     }
