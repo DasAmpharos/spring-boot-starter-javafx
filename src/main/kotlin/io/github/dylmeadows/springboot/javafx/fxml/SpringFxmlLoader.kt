@@ -1,5 +1,7 @@
 package io.github.dylmeadows.springboot.javafx.fxml
 
+import io.github.dylmeadows.commonkt.core.io.Resource
+import io.github.dylmeadows.commonkt.core.io.url
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.util.Callback
@@ -13,6 +15,14 @@ import java.util.*
 @Component
 class SpringFxmlLoader @Autowired constructor(
     private val ctx: ApplicationContext) {
+
+    fun <T : Parent> load(resource: Resource): T {
+        return load(resource.url!!)
+    }
+
+    fun <T : Parent> load(resource: Resource, resources: ResourceBundle): T {
+        return load(resource.url!!, resources)
+    }
 
     fun <T : Parent> load(location: URL): T {
         val loader = FXMLLoader()
