@@ -1,94 +1,72 @@
-buildscript {
-    repositories {
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots'
-        }
-        maven {
-            url 'https://plugins.gradle.org/m2'
-        }
-        mavenCentral()
-        jcenter()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:$artifactory_version"
-        classpath 'org.openjfx:javafx-plugin:0.0.8-SNAPSHOT'
-    }
+plugins {
+    id "maven"
+    id "maven-publish"
+    id "java-library"
+    id "org.jetbrains.kotlin.jvm" version "1.3.41"
+    id "com.jfrog.artifactory" version "4.9.7"
 }
 
-apply plugin: 'kotlin'
-apply plugin: 'java-library'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'org.openjfx.javafxplugin'
+group = "io.github.dylmeadows"
+version = "2.1.6-SNAPSHOT"
 
 repositories {
+    maven { url "https://oss.jfrog.org/artifactory/libs-snapshot" }
     mavenCentral()
-    maven {
-        url 'https://oss.jfrog.org/artifactory/libs-snapshot'
-    }
 }
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 dependencies {
-    implementation('org.jetbrains.kotlin:kotlin-stdlib-jdk8')
-    api("org.springframework.boot:spring-boot-starter:$spring_version")
-    api('io.github.dylmeadows:commonkt-javafx:0.0.1-SNAPSHOT') { changing = true }
-    api('io.github.dylmeadows:reactor-javafx:0.0.1-SNAPSHOT') { changing = true }
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    api("org.springframework.boot:spring-boot-starter:2.1.6.RELEASE")
+    api("io.github.dylmeadows:commonkt-javafx:0.0.1-SNAPSHOT") { changing = true }
+    api("io.github.dylmeadows:reactor-javafx:0.0.1-SNAPSHOT") { changing = true }
+    compileOnly "org.openjfx:javafx-base:11.0.2:mac"
+    compileOnly "org.openjfx:javafx-graphics:11.0.2:mac"
+    compileOnly "org.openjfx:javafx-controls:11.0.2:mac"
+    compileOnly "org.openjfx:javafx-fxml:11.0.2:mac"
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = '1.8'
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = '1.8'
-}
-
-javafx {
-    version = '11.0.2'
-    modules = [
-        'javafx.base',
-        'javafx.controls',
-        'javafx.fxml'
-    ]
-    configuration = 'compileOnly'
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
 }
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        mavenJavaLibrary(MavenPublication) {
             from components.java
-            groupId group
-            artifactId project.name
-            version project.version
         }
     }
 }
 
 artifactory {
-    contextUrl = 'https://oss.jfrog.org/artifactory'
+    contextUrl = "https://oss.jfrog.org/artifactory"
     publish {
         repository {
-            repoKey = 'oss-snapshot-local'
-            username = System.getenv('BINTRAY_USER')
-            password = System.getenv('BINTRAY_KEY')
+            repoKey = "oss-snapshot-local"
+            username = System.getenv("BINTRAY_USER")
+            password = System.getenv("BINTRAY_KEY")
             maven = true
         }
         defaults {
-            publications('mavenJava')
-            publishConfigs('archives', 'published')
-            publishBuildInfo = true
+            publications("mavenJavaLibrary")
+            publishConfigs("archives", "published")
             publishArtifacts = true
             publishPom = true
         }
     }
     resolve {
         repository {
-            repoKey = 'libs-release'
-            username = System.getenv('BINTRAY_USER')
-            password = System.getenv('BINTRAY_KEY')
+            repoKey = "libs-release"
+            username = System.getenv("BINTRAY_USER")
+            password = System.getenv("BINTRAY_KEY")
             maven = true
         }
     }
 }
+
