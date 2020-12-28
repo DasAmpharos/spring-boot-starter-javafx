@@ -1,0 +1,25 @@
+project.ext.branch = getGitBranch()
+project.ext.isSnapshot = !branch.equalsIgnoreCase("master")
+
+final String URL = "https://oss.jfrog.org/artifactory"
+
+project.ext.ossReleaseLocal = "$URL/oss-release-local"
+project.ext.ossSnapshotLocal = "$URL/oss-snapshot-local"
+
+repositories {
+    maven { url "$ossReleaseLocal" }
+    maven { url "$ossSnapshotLocal" }
+    mavenLocal()
+}
+
+static def getGitBranch() {
+    if (System.getenv("BRANCH_NAME") != null) {
+        return System.getenv("BRANCH_NAME")
+    }
+    def branch = ""
+    def proc = "git rev-parse --abbrev-ref HEAD".execute()
+    proc.in.eachLine { line -> branch = line }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    branch
+}

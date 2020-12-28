@@ -1,7 +1,6 @@
 package io.github.dylmeadows.springboot.javafx.fxml
 
-import io.github.dylmeadows.commonkt.core.io.Resource
-import io.github.dylmeadows.commonkt.core.io.url
+import io.github.dylmeadows.springboot.javafx.util.Resource
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.util.Callback
@@ -18,16 +17,12 @@ class SpringFxmlLoader @Autowired constructor(
 ) {
     fun <T : Parent> load(
         resource: Resource
-    ): T {
-        return load(resource.url!!)
-    }
+    ): T = load(resource.url)
 
     fun <T : Parent> load(
         resource: Resource,
         resources: ResourceBundle
-    ): T {
-        return load(resource.url!!, resources)
-    }
+    ): T = load(resource.url, resources)
 
     fun <T : Parent> load(
         location: URL

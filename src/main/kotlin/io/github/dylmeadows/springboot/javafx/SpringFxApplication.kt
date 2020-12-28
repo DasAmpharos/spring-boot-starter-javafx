@@ -5,6 +5,7 @@ import javafx.stage.Stage
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.WebApplicationType
 import org.springframework.boot.builder.SpringApplicationBuilder
+import org.springframework.boot.runApplication
 import org.springframework.context.ConfigurableApplicationContext
 
 open class SpringFxApplication : Application() {
@@ -17,7 +18,7 @@ open class SpringFxApplication : Application() {
             .web(WebApplicationType.NONE)
             .headless(false)
             .run(*args)
-        entryPoint = ctx.getBean(ApplicationEntryPoint::class)
+        entryPoint = ctx.getBean()
         entryPoint.init()
     }
 
