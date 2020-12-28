@@ -24,7 +24,6 @@ publishing {
             artifact sourceJar
         }
     }
-
     repositories {
         maven {
             credentials {
