@@ -3,6 +3,7 @@ package io.github.dylmeadows.springboot.javafx
 import javafx.application.Application
 import javafx.stage.Stage
 import org.springframework.beans.factory.getBean
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.WebApplicationType
 import org.springframework.boot.builder.SpringApplicationBuilder
 import org.springframework.boot.runApplication
@@ -14,9 +15,11 @@ open class SpringFxApplication : Application() {
 
     override fun init() {
         val args = parameters.raw.toTypedArray()
+        SpringApplication.run(javaClass, *args)
         ctx = SpringApplicationBuilder(javaClass)
             .web(WebApplicationType.NONE)
             .headless(false)
+            .main(javaClass)
             .run(*args)
         entryPoint = ctx.getBean()
         entryPoint.init()
