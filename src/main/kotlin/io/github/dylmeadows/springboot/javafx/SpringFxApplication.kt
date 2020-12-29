@@ -15,7 +15,6 @@ open class SpringFxApplication : Application() {
 
     override fun init() {
         val args = parameters.raw.toTypedArray()
-        SpringApplication.run(javaClass, *args)
         ctx = SpringApplicationBuilder(javaClass)
             .web(WebApplicationType.NONE)
             .headless(false)
