@@ -1,6 +1,6 @@
 package io.github.dylmeadows.springboot.javafx.fxml
 
-import io.github.dylmeadows.springboot.javafx.util.Resource
+import io.github.dylmeadows.commonkt.core.io.Resource
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.util.Callback

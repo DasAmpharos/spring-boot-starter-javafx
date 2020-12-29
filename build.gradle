@@ -28,6 +28,7 @@ javafx {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     api("org.springframework.boot:spring-boot-starter:2.4.1")
+    api("io.github.dylmeadows:commonkt-core:0.0.1")
 }
 
 compileKotlin {

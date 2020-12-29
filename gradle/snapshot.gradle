@@ -1,5 +1,6 @@
 project.ext.branch = getGitBranch()
-project.ext.isSnapshot = !branch.equalsIgnoreCase("master")
+final boolean isMainBranch = branch.equalsIgnoreCase("main") || branch.equalsIgnoreCase("master")
+project.ext.isSnapshot = !isMainBranch
 
 final String URL = "https://oss.jfrog.org/artifactory"
 
